@@ -3,9 +3,13 @@ import tweepy
 import os
 import time
 import datetime
+from datetime import timedelta
+
+
 
 count=0
-today1=datetime.date.today()  #datetimeをdtime1に取得する
+today1=datetime.datetime.today()
+#datetimeをdtime1に取得する
 
 
 #取得キー
@@ -26,9 +30,9 @@ class MyStreamListener(tweepy.StreamListener):
     #ツイートを受信したときに呼び出されるメソッド
     #引数はツイートを表すstatusオブジェクト
     def on_status(self, status):
-        today2=datetime.date.today()  #datetimeをdtime2に取得する
-        tweet="{time},{tweet}".format(time=status.created_at, tweet=status.text)
-        print(status.created_at,'@' + status.user.screen_name, status.text)
+        today2=datetime.datetime.today()  #datetimeをdtime2に取得する
+        tweet="{time},{tweet}".format(time=status.created_at+datetime.timedelta(hours=9), tweet=status.text)
+        print(tweet)
         f=open('twitter_tameshi.text', 'a')
         f.write(tweet)
         f.write('\n')
@@ -38,14 +42,13 @@ class MyStreamListener(tweepy.StreamListener):
         f.close()
 
         global today1
-        todaydef=today2-today1
-        if todaydef.days>=1:
+        if (today2-today1).days>=1:
 
             #日数差が１以上だったら更新する（カウントを０に戻す）
             f=open('day.csv', 'a')
             f.write(str(count))
             f.write(',')
-            f.write(str(today2))
+            f.write(str(today1))
             f.write('\n')
             count=0
             today1=today2
@@ -65,7 +68,7 @@ while True:
          #＃＃＃＃＃＃まだ位置情報はいれていません＃＃＃＃＃＃＃
          stream.filter(track=["犯罪","不審者","戸締り","つきまとわれる","防犯","わいせつ","公然わいせつ",
          "ちかん","痴漢","危険","声かけ","追いかけられる","脅迫","暴行",
-         "声をかけられる","凶悪","事件","詐欺","オレオレ","警察","ひったくり","侵入","万引き",
+         "凶悪","事件","詐欺","オレオレ","警察","ひったくり","侵入","万引き",
          "空き巣","犯人","泥棒","放浪","違反","違反","逃走","犯","嫌","嫌だ","いや","難しい","じゃまくさい","邪魔","忙し",
          "出来ない","こまった","疲れた","つかれた","こまる","つら","ムカつく","やば","許さない","くるし",
          "つらい","むかつく","だるい","やばい","ゆるせない","苦し","つまらない","不幸",
@@ -77,9 +80,8 @@ while True:
          print("\n")
          count+=1     #カウント増やす
          print(count)
-         today2=datetime.date.today()  #datetimeをdtime2に取得する
-         todaydef=today2-today1
-         if todaydef.days>=1:
+         today2=datetime.datetime.today()  #datetimeをdtime2に取得する
+         if (today2-today1).days>=1:
              #日数差が１以上だったら更新する（カウントを０に戻す）
              f=open('day.csv', 'a')
              f.write(str(count))
@@ -97,5 +99,10 @@ while True:
         stream=tweepy.Stream(auth, MyStreamListener())
         stream.filter(track=["犯罪","不審者","戸締り","つきまとわれる","防犯","わいせつ","公然わいせつ",
         "ちかん","痴漢","危険","声かけ","追いかけられる","脅迫","暴行",
-        "声をかけられる","凶悪","事件","詐欺","オレオレ","警察","ひったくり","侵入","万引き",
+        "凶悪","事件","詐欺","オレオレ","警察","ひったくり","侵入","万引き",
         "空き巣","犯人","泥棒","放浪","違反","違反","逃走","犯","かけられ"])
+
+
+
+
+#print(status.created_at,'@' + status.user.screen_name, status.text)
